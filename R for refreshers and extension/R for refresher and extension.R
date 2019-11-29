@@ -28,12 +28,19 @@ employment_clean <- employment %>% #use employment data THEN
 ######## Column modulation 
 
 #we want to have the quaters and the years separate
+# separate(data, Variable, into= c('ne_varA' , 'new_varB' ), sep = 'separator')
 
-employment_colummns <- employment_clean %>% 
-  
-  
-  
-  
+employment_separate <- employment_clean %>% 
+  separate(DateCode, c('Year', 'Quarter'), sep="-")
+
+View(employment_separate)
+
+#unite works is the exact opposite way  
+# unite(data, new_variable, c(variable1, variable2), sep = 'separator')  
+
+
+employment_united <- employment_separate %>% 
+  unite(DateCode, c('Year', 'Quarter'), sep="-")
 
 #get summary statistics for male and female
 
