@@ -185,7 +185,7 @@ ggplot(exports_line, aes(DateCode, Value)) +
 #Time to play
 
 # TASK: 
-# Ccreate a summary table for one industry for International and Rest of UK only. 
+# Create a summary table for one industry for International and Rest of UK only. 
 # Then plot a line graph for all years
 
 
@@ -194,3 +194,43 @@ ggplot(exports_line, aes(DateCode, Value)) +
 
 
 
+
+
+
+
+
+#### Extra  - pipes
+
+#Pipes feed into each other. Easiest interpretation is to read them as 'then'
+
+#Select variable, then, filter rows, then group, then....
+
+# It reduces the number of environment objects created
+
+
+exports_pipes <- exports %>% #use exports data THEN
+  
+  select(DateCode, Value, `Industry Sector (SIC 07)`, 
+         `Export Destination`) %>%  #select  DateCode, Value, `Industry Sector (SIC 07)` & `Export Destination` THEN
+  
+  filter(DateCode == 2017) %>% #keep only  year 2017 THEN
+  
+  mutate(value_billions = Value/1000) #rcreate a new column, which gives the 
+
+
+####extra 2 joins: 
+
+#create a lookup table just for ilustration purposes
+
+#func_join(table1, table2, by = common_variables)
+#inner_join -  keep only rows that match
+#left_join - keep all from table 1, only matching rows in table2
+# right_join - keep all from table 2, only matching rows in table 1
+# anti_join - keep only rows in table 1 that do not have a match in table 2
+# full_join - keep everything 
+
+
+to_join <- tibble(SIC = unique(exports$`Industry Sector (SIC 07)`), industries = rep(c('A', 'B' , 'C', 'D', 'E'), times = c(4,3,11,2,9)))
+
+#join using 
+joined_tables <- inner_join(exports_pipes, to_join, by = c('Industry Sector (SIC 07)' = 'SIC'))
