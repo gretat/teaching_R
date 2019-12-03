@@ -186,3 +186,6 @@ ggplot(employment_plot, aes(x = as.numeric(Year), y = Value/1000000, group = `Wo
   theme(axis.title.x = element_text(size = 12, colour = 'magenta'),
         axis.title.y = element_text(size = 16, colour = 'blue'),
         legend.position = 'top')
+
+
+####   Everyone’s favourite: Maps (static) ####
