@@ -43,11 +43,11 @@ employment_united <- employment_separate %>%
   unite(DateCode, c('Year', 'Quarter'), sep="-")
 
 
-####### Finding patterns with grepl and grep
+####### Finding patterns with grepl and grep ######
 
 genders <- c('male', 'female', 'non-binary', 'transgender', 'other')
 
-# we want to find at which positions we can find the word male - i.e. male and female
+# we want to find at which positions we can find the pattern male - i.e. male and female
 
 ind<- grep('male', genders, fixed = T)
 
@@ -63,7 +63,7 @@ genders[grepl('male', genders, fixed= T)] #gives you male and female immediately
 
 
 
-######## Advanced Variable creation with mutate
+######## Advanced Variable creation with mutate #######
 
 #create a new variable based on a conditional statement 
 # ifelse(conditon, case_if_true, case_if_false)
@@ -86,7 +86,7 @@ employment_mutate_at <- employment_mutate_cases %>%
 
 
 
-# Advanced filtering  
+############## Advanced filtering  #######
 
 
 #filter based on more than one matching condition using %in%
@@ -120,7 +120,7 @@ employment_filter_all <- employment_mutate_cases %>%
 
 
 
-############Joining tables ####
+############Joining tables #######
 
 
 #we can join tables with the same column titles 
@@ -139,13 +139,46 @@ emplyment_cbind <- cbind(employment1, employment2[1:400,])
 
 
 ### more useful is if we want to join tables we already have
+####extra 2 joins: 
 
-# inner_join 
+#create a lookup table just for ilustration purposes
+
+#func_join(table1, table2, by = common_variables)
+#inner_join -  keep only rows that match
+#left_join - keep all from table 1, only matching rows in table2
+# right_join - keep all from table 2, only matching rows in table 1
+# anti_join - keep only rows in table 1 that do not have a match in table 2
+# full_join - keep everything 
 
 
+#we can
 
-#get summary statistics for male and female
+to_join <- tibble(married_perc = sort(unique(employment_mutate_cases$married_percentage)), rate_average = rep(c('bellow', 'above'), each = 2))
 
-employments_summary <- employment_clean %>% 
-  group_by(Gender, `Working Pattern`) %>% 
-  summarise(count = sum(Value))
+#join using 
+joined_tables <- inner_join(employment_mutate_cases, to_join, by = c('married_percentage' = 'married_perc'))
+
+
+########## Plotting opportunities #######
+
+
+#lets make a basic plot
+
+#get data for male and female only
+
+employment_plot <- employment_mutate_cases %>% 
+  filter(tolower(Gender) %in% gender_cat) %>% 
+  group_by(Year, Gender, `Working Pattern`) %>% 
+  summarise(Value = sum(Value),
+            married_percentage = mean(married_percentage))%>% 
+  ungroup()
+
+
+ggplot(employment_plot, aes(x = Year, y = Value, group = `Working Pattern`, colour = `Working Pattern`)) +
+  geom_line() +  
+  geom_point() +
+  
+  theme_bw() +
+  theme(axis.title.x = element_text('Year 2004 - 2019'),
+        legend.position = 'top') +
+facet_grid(.~Gender) 
