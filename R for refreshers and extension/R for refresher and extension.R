@@ -170,15 +170,19 @@ employment_plot <- employment_mutate_cases %>%
   filter(tolower(Gender) %in% gender_cat) %>% 
   group_by(Year, Gender, `Working Pattern`) %>% 
   summarise(Value = sum(Value),
-            married_percentage = mean(married_percentage))%>% 
+            married_percentage = mean(married_percentage),
+            carrots_eaten = sum(Carrots_eaten))%>% 
   ungroup()
 
 
-ggplot(employment_plot, aes(x = Year, y = Value, group = `Working Pattern`, colour = `Working Pattern`)) +
+ggplot(employment_plot, aes(x = as.numeric(Year), y = Value/1000000, group = `Working Pattern`, colour = `Working Pattern`)) +
+  geom_col(aes(y = carrots_eaten/100000, x = as.numeric(Year) , group = `Working Pattern`, fill = `Working Pattern`)) +
+  scale_fill_manual(values = c("#0072B2", "#F69F00"))+ 
   geom_line() +  
   geom_point() +
-  
+  facet_grid(Gender~., labeller = as_labeller(c(Female = 'Women', Male = 'Men'))) +
   theme_bw() +
-  theme(axis.title.x = element_text('Year 2004 - 2019'),
-        legend.position = 'top') +
-facet_grid(.~Gender) 
+  labs(x = "Year 2004 - 2019", y = "Count in Millions") +
+  theme(axis.title.x = element_text(size = 12, colour = 'magenta'),
+        axis.title.y = element_text(size = 16, colour = 'blue'),
+        legend.position = 'top')
