@@ -11,7 +11,7 @@ library(ggplot2)
 
 #load in the dataset with read_csv()
 
-employment <- read_csv("employment_statistics.csv")
+employment <- read_csv("employment_statistics.csv") #scottish government employment data modified. Does not represent real data
 
 #quick recap on tidyverse and pipes
 #Pipes feed into each other. Easiest interpretation is to read them as 'then'
@@ -189,11 +189,13 @@ ggplot(employment_plot, aes(x = as.numeric(Year), y = Value/1000000, group = `Wo
 
 
 ####   Everyone’s favourite: Maps (static) ####
+
+#Roughly following this blog post by John Mackintosh: https://www.johnmackintosh.com/2017-09-01-easy-maps-with-tmap/
 library(tmap)
 library(tmaptools)
 
-
-scot <- read_shape("SG_SIMD_2016.shp", as.sf = T)
+# import the data bellow, or use the scot_data.RData file
+scot <- read_shape("SG_SIMD_2016.shp", as.sf = T) #data: https://www2.gov.scot/Topics/Statistics/SIMD
 
 highland <- (scot[scot$LAName=="Highland",])
 
@@ -226,14 +228,14 @@ multipl <- tm_shape(scot[scot$LAName==c("Aberdeen City", "Glasgow City"),]) + #s
 multipl
 
 
-#lets plot small multiple maps
-small_mult<- tm_shape(highland) +
-  tm_fill(col = c("IncRank","EmpRank","HlthRank","EduRank",
-                  "GAccRank","CrimeRank","HouseRank","Rank"),
+#lets plot small multiple maps. facetting option 2
+multipl_v2<- tm_shape(highland) +
+  tm_fill(col = c("EmpRank","HlthRank","EduRank",
+                  "GAccRank","CrimeRank","Rank"),
           palette = 'div',
-          title=c("Income Rank", "Employment Rank","Health Rank","Education Rank",
-                  "General Access Rank","Crime Rank", "Housing Rank","Overall Rank"))
-small_mult
+          title=c("Employment Rank","Health Rank","Education Rank",
+                  "General Access Rank","Crime Rank", "Overall Rank"))
+multipl_v2
 
 
 
