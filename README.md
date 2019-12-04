@@ -3,14 +3,14 @@
  
  
 Packages used: 
-library(tidyverse)
-library(dplyr)
-library(tidyr)
-library(readr)
-library(readxl)
-library(ggplot2)
-library(stringr)
-library(tmap)
+library(tidyverse),
+library(dplyr),
+library(tidyr),
+library(readr),
+library(readxl),
+library(ggplot2),
+library(stringr),
+library(tmap),
 library(tmaptools)
 
 References:
