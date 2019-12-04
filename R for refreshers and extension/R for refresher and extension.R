@@ -172,7 +172,7 @@ employment_plot <- employment_mutate_cases %>%
   summarise(Value = sum(Value),
             married_percentage = mean(married_percentage),
             carrots_eaten = sum(Carrots_eaten))%>% 
-  ungroup()
+  ungroup() # in pipes, you need to always ungroup once you have finished with the groups
 
 
 ggplot(employment_plot, aes(x = as.numeric(Year), y = Value/1000000, group = `Working Pattern`, colour = `Working Pattern`)) +
@@ -189,3 +189,51 @@ ggplot(employment_plot, aes(x = as.numeric(Year), y = Value/1000000, group = `Wo
 
 
 ####   Everyone’s favourite: Maps (static) ####
+library(tmap)
+library(tmaptools)
+
+
+scot <- read_shape("SG_SIMD_2016.shp", as.sf = T)
+
+highland <- (scot[scot$LAName=="Highland",])
+
+
+#lets create a map that colours based on the Health column
+
+#Similar to ggplot tmap works in layers
+
+education <- tm_shape(highland) + # Layer 1. what is our shape
+  tm_fill(col = "EduAttend", # Layer2 : fill or colour based on the Attending Education column
+          palette = 'div', # choose a palette
+        #  palette = 'seq',
+          title = "Highland Council Area by School Pupil attendance") +# title of our leged
+  tm_layout(legend.width = 1)
+education 
+
+
+#lets get Employment rank & dots for the crimeRank for Aberdeen and Glasgow
+
+multipl <- tm_shape(scot[scot$LAName==c("Aberdeen City", "Glasgow City"),]) + #select only Glasgow & Aberdeen
+  tm_fill(col  = "EmpRank",
+              title = 'Employment Rank',
+          palette = 'div') +
+  tm_symbols(col = 'blue', 
+             size = 'CrimeRank', 
+             scale = .6,
+             title.size = 'Crime Rank') +
+  tm_facets(by = 'LAName', nrow = 2)
+
+multipl
+
+
+#lets plot small multiple maps
+small_mult<- tm_shape(highland) +
+  tm_fill(col = c("IncRank","EmpRank","HlthRank","EduRank",
+                  "GAccRank","CrimeRank","HouseRank","Rank"),
+          palette = 'div',
+          title=c("Income Rank", "Employment Rank","Health Rank","Education Rank",
+                  "General Access Rank","Crime Rank", "Housing Rank","Overall Rank"))
+small_mult
+
+
+
